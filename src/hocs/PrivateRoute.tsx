@@ -2,15 +2,19 @@ import { useRouter } from "next/router";
 import { useAuth } from "../contexts/AuthProvider";
 
 const PrivateRoute = (Component: any) => {
-  const WithAuth = (props: any) => {
+  const AuthCheck = (props: any) => {
+    // Get user information
     const { user, loading } = useAuth();
 
+    // useRouter hook
     const router = useRouter();
 
+    // Loader until user information
     if (loading) {
       return <div>Loading...</div>;
     }
 
+    // Redirect to login page if user is not logged in
     if (!user) {
       router.replace({
         pathname: "/login",
@@ -18,15 +22,9 @@ const PrivateRoute = (Component: any) => {
       });
       return null;
     }
-
-    // if (!loading && user) {
-    //   return router.replace("/");
-    // }
-
     return <Component {...props} />;
   };
-
-  return WithAuth;
+  return AuthCheck;
 };
 
 export default PrivateRoute;

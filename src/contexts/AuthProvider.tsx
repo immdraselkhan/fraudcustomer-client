@@ -1,6 +1,3 @@
-// src/contexts/AuthProvider.tsx
-
-"use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   getAuth,
@@ -42,10 +39,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => unSubscribe();
   }, []);
 
-  // Social media providers
-  const googleAuthProvider = new GoogleAuthProvider();
-  const twitterAuthProvider = new TwitterAuthProvider();
-  const githubAuthProvider = new GithubAuthProvider();
+  // Social media auth providers
+  const googleAuth = new GoogleAuthProvider();
+  const twitterAuth = new TwitterAuthProvider();
+  const githubAuth = new GithubAuthProvider();
 
   // Authenticate using social media (Popup)
   const authWithPopup = (provider: any) => {
@@ -63,11 +60,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, googleAuthProvider, authWithPopup, userLogOut }}
+      value={{ googleAuth, authWithPopup, loading, user, userLogOut }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
 
+// Create hook for auth
 export const useAuth = () => useContext(AuthContext);
