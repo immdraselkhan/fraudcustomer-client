@@ -4,11 +4,8 @@ import PrivateRoute from "@/src/hocs/PrivateRoute";
 
 const Profile = () => {
   // Get user information
-  const { loading, user, userLogOut } = useAuth();
+  const { user, userLogOut } = useAuth();
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
   return (
     <div>
       Welcome {user?.uid}

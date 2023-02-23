@@ -43,7 +43,7 @@ const Login = () => {
         auth
       );
     }
-  }, [loading, user]);
+  }, [loading, user, auth]);
 
   const handleSendOtp = (event: HTMLEvent) => {
     event.preventDefault();
