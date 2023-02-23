@@ -3,6 +3,7 @@ import { useAuth } from "@/src/contexts/AuthProvider";
 import PrivateRoute from "@/src/hocs/PrivateRoute";
 
 const Profile = () => {
+  // Get user information
   const { loading, user, userLogOut } = useAuth();
 
   // if (loading) {

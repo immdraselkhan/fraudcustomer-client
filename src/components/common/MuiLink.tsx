@@ -83,6 +83,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
     ...other
   } = props;
 
+  // Next router hook
   const router = useRouter();
   const pathname = typeof href === "string" ? href : href.pathname;
   const className = clsx(classNameProps, {

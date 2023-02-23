@@ -22,22 +22,19 @@ function TablePaginationActions(props: any) {
   const theme = useTheme();
   const { count, page, rowsPerPage, onPageChange } = props;
 
-  // Event type
-  type event = React.MouseEvent<HTMLElement>;
-
-  const handleFirstPageButtonClick = (event: event) => {
+  const handleFirstPageButtonClick = (event: HTMLEvent) => {
     onPageChange(event, 0);
   };
 
-  const handleBackButtonClick = (event: event) => {
+  const handleBackButtonClick = (event: HTMLEvent) => {
     onPageChange(event, page - 1);
   };
 
-  const handleNextButtonClick = (event: event) => {
+  const handleNextButtonClick = (event: HTMLEvent) => {
     onPageChange(event, page + 1);
   };
 
-  const handleLastPageButtonClick = (event: event) => {
+  const handleLastPageButtonClick = (event: HTMLEvent) => {
     onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 
@@ -216,7 +213,7 @@ export default function Pagination() {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage: (event: any) => void = (event) => {
+  const handleChangeRowsPerPage = (event: HTMLEvent) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };

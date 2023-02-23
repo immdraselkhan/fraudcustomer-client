@@ -23,7 +23,8 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "typeRoots": ["./node_modules/@types", "./src/utilis"]
   },
   "include": [
     "next-env.d.ts",

@@ -25,17 +25,20 @@ import { useAuth } from "@/src/contexts/AuthProvider";
 import { useRouter } from "next/router";
 
 const Header = () => {
+  // Get user information
   const { user, loading, userLogOut } = useAuth();
 
   const { colorMode, toggleColorMode } = useContext(ThemeContext);
 
   const [menuState, setMenuState] = useState<boolean>(false);
 
+  // Next router hook
   const router = useRouter();
 
+  // user logout handler
   const handleLogOut = () => {
     userLogOut();
-    router.push("/");
+    router.push("/login");
   };
 
   const renderMenu = (
@@ -146,8 +149,8 @@ const Header = () => {
                   aria-label="account of current user"
                   aria-haspopup="true"
                   color="inherit"
-                  onClick={(event) =>
-                    void setMenuState(event.currentTarget as any)
+                  onClick={(event: HTMLEvent) =>
+                    void setMenuState(event.currentTarget)
                   }
                 >
                   <AccountCircle />

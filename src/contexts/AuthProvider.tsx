@@ -39,6 +39,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => unSubscribe();
   }, []);
 
+  // Authenticate using phone number
+  const phoneAuth = (phoneNumber: any, appVerifier: any) => {
+    // Return the firebase api function
+    return signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+  };
+
   // Social media auth providers
   const googleAuth = new GoogleAuthProvider();
   const twitterAuth = new TwitterAuthProvider();
@@ -60,7 +66,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ googleAuth, authWithPopup, loading, user, userLogOut }}
+      value={{
+        phoneAuth,
+        googleAuth,
+        authWithPopup,
+        loading,
+        user,
+        userLogOut,
+      }}
     >
       {children}
     </AuthContext.Provider>
