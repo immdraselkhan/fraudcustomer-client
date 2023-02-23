@@ -6,7 +6,7 @@ const PrivateRoute = (Component: any) => {
     // Get user information
     const { user, loading } = useAuth();
 
-    // useRouter hook
+    // Next router hook
     const router = useRouter();
 
     // Loader until user information

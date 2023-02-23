@@ -4,11 +4,11 @@ import Footer from "../components/client/Footer";
 import { useTheme } from "@mui/material/styles";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
+  // Mui theme hook
   const theme = useTheme();
   return (
     <>
       <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
         <meta
           name="description"
           content="Everyone easily can search Fraud Customers who are spamming in online."
@@ -34,7 +34,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
               : "#121212"
           }
         />
-        <link rel="shortcut icon" href="" />
       </Head>
       <Header />
       {children}

@@ -29,7 +29,7 @@ const Header = () => {
 
   const { colorMode, toggleColorMode } = useContext(ThemeContext);
 
-  const [menuState, setMenuState] = useState(false);
+  const [menuState, setMenuState] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -110,9 +110,7 @@ const Header = () => {
       </Button>
     </Box>
   );
-  // if (loading) {
-  //   return <Typography>Loading...</Typography>;
-  // }
+
   return (
     <Box sx={{ flexGrow: 1 }} component="header">
       <AppBar position="static">
@@ -148,7 +146,9 @@ const Header = () => {
                   aria-label="account of current user"
                   aria-haspopup="true"
                   color="inherit"
-                  onClick={(event) => setMenuState(event.currentTarget as any)}
+                  onClick={(event) =>
+                    void setMenuState(event.currentTarget as any)
+                  }
                 >
                   <AccountCircle />
                 </IconButton>

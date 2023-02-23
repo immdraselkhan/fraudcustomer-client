@@ -1,8 +1,7 @@
-"use client";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { useTheme } from "@mui/system";
+import { useTheme } from "@mui/material/styles";
 import useDate from "@/src/hooks/useDate";
 
 const PostCard = () => {
