@@ -1,7 +1,6 @@
 import { createContext, useEffect, useState } from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider, ThemeOptions } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { ThemeOptions } from "@mui/material";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -10,13 +9,26 @@ import "@fontsource/roboto/700.css";
 // Create theme context
 export const ThemeContext = createContext<any>({});
 
+// Add inside palette
+declare module "@mui/material/styles" {
+  interface Palette {
+    excel: {
+      light: string;
+      dark: string;
+      hover: string;
+    };
+  }
+}
+
 const MuiThemeProvider = ({ children }: { children: React.ReactNode }) => {
   // Color mode state
   const [colorMode, setColorMode] = useState("system");
 
   // Conditonal color mode toggle
-  // @ts-ignore
-  const toggleColorMode = (event, newColorMode: string) => {
+  const toggleColorMode = (
+    event: React.MouseEvent<HTMLElement>,
+    newColorMode: string
+  ) => {
     if (newColorMode === "system") {
       localStorage.removeItem("mui-mode");
       setColorMode("system");
@@ -27,8 +39,8 @@ const MuiThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Perform localStorage action
   useEffect(() => {
-    // Perform localStorage action
     const preferredColorMode = localStorage.getItem("mui-mode");
     setColorMode(
       preferredColorMode === "dark"
@@ -42,6 +54,7 @@ const MuiThemeProvider = ({ children }: { children: React.ReactNode }) => {
   // System color mode
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
+  // Customize the theme
   const theme = createTheme({
     palette: {
       mode:

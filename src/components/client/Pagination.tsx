@@ -18,23 +18,26 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import { TableHead } from "@mui/material";
 
-function TablePaginationActions(props) {
+function TablePaginationActions(props: any) {
   const theme = useTheme();
   const { count, page, rowsPerPage, onPageChange } = props;
 
-  const handleFirstPageButtonClick = (event) => {
+  // Event type
+  type event = React.MouseEvent<HTMLElement>;
+
+  const handleFirstPageButtonClick = (event: event) => {
     onPageChange(event, 0);
   };
 
-  const handleBackButtonClick = (event) => {
+  const handleBackButtonClick = (event: event) => {
     onPageChange(event, page - 1);
   };
 
-  const handleNextButtonClick = (event) => {
+  const handleNextButtonClick = (event: event) => {
     onPageChange(event, page + 1);
   };
 
-  const handleLastPageButtonClick = (event) => {
+  const handleLastPageButtonClick = (event: event) => {
     onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 
@@ -87,7 +90,13 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-function createData(name, phone, comment, shop, date) {
+function createData(
+  name: string,
+  phone: string,
+  comment: string,
+  shop: string,
+  date: string
+) {
   return { name, phone, comment, shop, date };
 }
 
@@ -200,11 +209,14 @@ export default function Pagination() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage: (event: any, newPage: any) => void = (
+    event,
+    newPage
+  ) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage: (event: any) => void = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -219,7 +231,7 @@ export default function Pagination() {
       label: "Date",
       minWidth: 170,
       align: "right",
-      format: (value) => value.toLocaleString("en-US"),
+      format: (value: string | number) => value.toLocaleString("en-US"),
     },
   ];
 
