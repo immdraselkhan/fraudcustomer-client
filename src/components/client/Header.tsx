@@ -62,7 +62,7 @@ const Header = () => {
         component={NextLinkComposed}
         onClick={() => setMenuState(false)}
       >
-        My account
+        My Account
       </MenuItem>
       <MenuItem
         onClick={() => {
@@ -135,7 +135,7 @@ const Header = () => {
             FraudCustomer
           </Button>
           {loading ? (
-            <CircularProgress sx={{ marginLeft: "auto" }} />
+            <CircularProgress color="primary" sx={{ marginLeft: "auto" }} />
           ) : (
             <Box sx={{ marginLeft: "auto" }}>
               {!user?.uid ? (
