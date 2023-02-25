@@ -9,6 +9,7 @@ import { Paper } from "@mui/material";
 import { useRouter } from "next/router";
 import DashboardLayout from "@/src/layouts/DashboardLayout";
 import MainLayout from "@/src/layouts/MainLayout";
+import { Toaster } from "react-hot-toast";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -40,6 +41,7 @@ export default function MyApp(props: MyAppProps) {
         <MuiThemeProvider>
           <Paper sx={{ borderRadius: "0" }}>
             <Layout>
+              <Toaster />
               <Component {...pageProps} />
             </Layout>
           </Paper>

@@ -5,6 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import useDate from "@/src/hooks/useDate";
 
 const PostCard = () => {
+  // Mui theme hook
   const theme = useTheme();
   return (
     <Card

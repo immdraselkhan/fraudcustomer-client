@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { Box, Container } from "@mui/material";
-import { useTheme } from "@mui/system";
+import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { getAuth, RecaptchaVerifier } from "firebase/auth";
 import { useAuth } from "@/src/contexts/AuthProvider";
@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import useTitle from "@/src/hooks/useTitle";
 import SendOTP from "@/src/components/client/login/SendOTP";
 import VerifyOTP from "@/src/components/client/login/VerifyOTP";
+import { toast } from "react-hot-toast";
+import Loader from "@/src/components/common/Loader";
 
 const Login = () => {
   // Global site title
@@ -67,11 +69,13 @@ const Login = () => {
         // user in with confirmationResult.confirm(code)
         window.confirmationResult = confirmationResult;
         // Otp sent successfully
+        toast.success("Otp sent successfully!");
         setLoader(false);
         setActiveStep(1);
       })
-      .catch((error: {}) => {
+      .catch((error: any) => {
         // Error; SMS not sent
+        toast.error(error?.message);
         setLoader(false);
         alert(error);
       });
@@ -91,14 +95,15 @@ const Login = () => {
       .then((result: { user: {} }) => {
         // User signed in successfully
         const user = result.user;
+        toast.success("User signed in successfully!");
         setLoader(false);
         // @ts-ignore
         router.replace(router?.query?.redirect || "/");
       })
-      .catch((error: {}) => {
+      .catch((error: any) => {
         // User couldn't sign in (bad verification code?)
+        toast.error(error?.message);
         setLoader(false);
-        alert(error);
       });
   };
 
@@ -109,7 +114,7 @@ const Login = () => {
 
   // Loader until user information
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   // Redirect to login page if user is not logged in

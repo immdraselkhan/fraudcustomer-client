@@ -54,7 +54,11 @@ const VerifyOTP = ({
             gap: "25px",
           }}
         >
-          <Button sx={{ maxWidth: "fit-content" }} onClick={handleBack}>
+          <Button
+            disabled={loader}
+            sx={{ maxWidth: "fit-content" }}
+            onClick={handleBack}
+          >
             Back
           </Button>
           <Button
@@ -74,6 +78,7 @@ const VerifyOTP = ({
         </Typography>
       ) : (
         <Button
+          disabled={loader}
           sx={{ width: "fit-content", margin: "0 auto" }}
           onClick={() => {
             setTimer(15);

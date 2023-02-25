@@ -23,6 +23,8 @@ import LightModeIcon from "@mui/icons-material/LightModeOutlined";
 import { NextLinkComposed } from "../common/MuiLink";
 import { useAuth } from "@/src/contexts/AuthProvider";
 import { useRouter } from "next/router";
+import { toast } from "react-hot-toast";
+import { useTheme } from "@mui/material/styles";
 
 const Header = () => {
   // Get user information
@@ -35,9 +37,13 @@ const Header = () => {
   // Next router hook
   const router = useRouter();
 
+  // Mui theme hook
+  const theme = useTheme();
+
   // user logout handler
   const handleLogOut = () => {
     userLogOut();
+    toast.success("User logged out!");
     router.push("/login");
   };
 
@@ -139,7 +145,13 @@ const Header = () => {
           ) : (
             <Box sx={{ marginLeft: "auto" }}>
               {!user?.uid ? (
-                <Button to="/login" component={NextLinkComposed}>
+                <Button
+                  to="/login"
+                  component={NextLinkComposed}
+                  variant={
+                    theme.palette.mode === "dark" ? "outlined" : "contained"
+                  }
+                >
                   Login
                 </Button>
               ) : (

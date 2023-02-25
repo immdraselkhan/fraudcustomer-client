@@ -4,7 +4,15 @@ import { useAuth } from "@/src/contexts/AuthProvider";
 import PrivateRoute from "@/src/hocs/PrivateRoute";
 
 import * as React from "react";
-import { Tabs, Tab, Typography, Box, Container } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import {
+  Tabs,
+  Tab,
+  Typography,
+  Box,
+  Container,
+  useMediaQuery,
+} from "@mui/material";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -12,7 +20,7 @@ interface TabPanelProps {
   value: number;
 }
 
-function TabPanel(props: TabPanelProps) {
+const TabPanel = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
 
   return (
@@ -30,14 +38,14 @@ function TabPanel(props: TabPanelProps) {
       )}
     </div>
   );
-}
+};
 
-function a11yProps(index: number) {
+const a11yProps = (index: number) => {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
   };
-}
+};
 
 const Profile = () => {
   // Global site title
@@ -45,6 +53,12 @@ const Profile = () => {
 
   // Get user information
   const { user, userLogOut } = useAuth();
+
+  // Mii theme hook
+  const theme = useTheme();
+
+  // Mui media query hook
+  const matches = useMediaQuery(theme.breakpoints.up("sm"));
 
   const [value, setValue] = React.useState(0);
 
@@ -61,7 +75,7 @@ const Profile = () => {
         <Box
           sx={{
             textAlign: "center",
-            padding: "75px 75px",
+            padding: "75px 0",
             background: "",
           }}
         >
@@ -71,8 +85,8 @@ const Profile = () => {
           <Box
             sx={{
               width: "100%",
-              display: "flex",
-              padding: "50px 50px",
+              display: { xs: "inherit", sm: "flex" },
+              padding: "50px 0",
               minHeight: "calc(100vh - 380px)",
             }}
           >
@@ -85,7 +99,8 @@ const Profile = () => {
               <Tabs
                 value={value}
                 onChange={handleChange}
-                orientation="vertical"
+                variant="scrollable"
+                orientation={matches ? "vertical" : "horizontal"}
                 aria-label="basic tabs example"
               >
                 <Tab

@@ -56,6 +56,13 @@ const MuiThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Customize the theme
   const theme = createTheme({
+    components: {
+      MuiUseMediaQuery: {
+        defaultProps: {
+          noSsr: true,
+        },
+      },
+    },
     palette: {
       mode:
         colorMode === "system" || !colorMode

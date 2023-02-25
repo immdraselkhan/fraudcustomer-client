@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useAuth } from "../contexts/AuthProvider";
-import { Stack, CircularProgress } from "@mui/material";
+import Loader from "../components/common/Loader";
 
 const PrivateRoute = (Component: any) => {
   const AuthCheck = (props: any) => {
@@ -12,16 +12,7 @@ const PrivateRoute = (Component: any) => {
 
     // Loader until user information
     if (loading) {
-      return (
-        <CircularProgress
-          sx={{
-            display: "flex",
-            margin: "0 auto",
-            minHeight: "calc(100vh - 188px)",
-          }}
-          color="primary"
-        />
-      );
+      return <Loader />;
     }
 
     // Redirect to login page if user is not logged in

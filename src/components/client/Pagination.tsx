@@ -19,6 +19,7 @@ import LastPageIcon from "@mui/icons-material/LastPage";
 import { TableHead } from "@mui/material";
 
 function TablePaginationActions(props: any) {
+  // Mui theme hook
   const theme = useTheme();
   const { count, page, rowsPerPage, onPageChange } = props;
 
