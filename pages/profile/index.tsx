@@ -1,9 +1,8 @@
+import * as React from "react";
 import Head from "next/head";
 import useTitle from "@/src/hooks/useTitle";
 import { useAuth } from "@/src/contexts/AuthProvider";
 import PrivateRoute from "@/src/hocs/PrivateRoute";
-
-import * as React from "react";
 import { useTheme } from "@mui/material/styles";
 import {
   Tabs,
@@ -12,7 +11,16 @@ import {
   Box,
   Container,
   useMediaQuery,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+  FormControl,
 } from "@mui/material";
+import PageTitle from "@/src/components/common/PageTitle";
+import EditAccount from "@/src/components/client/profile/EditAccount";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -57,13 +65,27 @@ const Profile = () => {
   // Mii theme hook
   const theme = useTheme();
 
+  console.log(theme);
+
   // Mui media query hook
   const matches = useMediaQuery(theme.breakpoints.up("sm"));
 
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(
+    !user?.displayName || !user?.email || !user?.photoURL ? 2 : 0
+  );
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+
+  const handleSubmit = (event: HTMLEvent) => {
+    event.preventDefault();
+    const firstName = event.target.firstName.value;
+    const lastName = event.target.lastName.value;
+    const email = event.target.email.value;
+    const shop = event.target.shop.value;
+    const userPhoto = event.target.userPhoto.files[0];
+    console.log(firstName, lastName, email, shop, userPhoto);
   };
 
   return (
@@ -72,15 +94,7 @@ const Profile = () => {
         <title>{`Profile | ${title}`}</title>
       </Head>
       <main>
-        <Box
-          sx={{
-            textAlign: "center",
-            padding: "75px 0",
-            background: "",
-          }}
-        >
-          <Typography variant="h4">My Account</Typography>
-        </Box>
+        <PageTitle title="My Account" />
         <Container>
           <Box
             sx={{
@@ -128,6 +142,35 @@ const Profile = () => {
                 Here will all entries
               </TabPanel>
               <TabPanel value={value} index={2}>
+                {(!user?.displayName || !user?.email || !user?.photoURL) && (
+                  <Dialog
+                    open={true}
+                    sx={{
+                      maxWidth: "450px",
+                      margin: "0 auto",
+                    }}
+                  >
+                    <DialogTitle sx={{ paddingBottom: 0 }}>
+                      Update Account Info
+                    </DialogTitle>
+                    <FormControl
+                      onSubmit={(event) => handleSubmit(event)}
+                      component="form"
+                    >
+                      <DialogContent>
+                        <DialogContentText sx={{ marginBottom: "20px" }}>
+                          To continue, please complete your profile.
+                        </DialogContentText>
+                        <EditAccount />
+                      </DialogContent>
+                      <DialogActions sx={{ padding: "0 20px 20px" }}>
+                        <Button variant="contained" type="submit">
+                          Submit
+                        </Button>
+                      </DialogActions>
+                    </FormControl>
+                  </Dialog>
+                )}
                 Account Details
               </TabPanel>
             </Box>

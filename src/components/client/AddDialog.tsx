@@ -21,7 +21,7 @@ const AddDialog = () => {
       <Button
         variant="contained"
         onClick={() => {
-          user?.uid ? setModal(true) : router.replace("/login");
+          user?.displayName ? setModal(true) : router.replace("/profile");
         }}
       >
         Add
