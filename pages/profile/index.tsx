@@ -18,14 +18,16 @@ import {
   DialogActions,
   Button,
   FormControl,
+  Paper,
 } from "@mui/material";
 import PageTitle from "@/src/components/common/PageTitle";
 import EditAccount from "@/src/components/client/profile/EditAccount";
 import convertBase64 from "@/src/utilis/convertBase64";
-import UploadImage from "@/src/hooks/useUploadImage";
+import uploadImage from "@/src/hooks/uploadImage";
 import LoadingOverlay from "@/src/components/common/LoadingOverlay";
 import { toast } from "react-hot-toast";
-import AxiosPost from "@/src/hooks/useAxiosPost";
+import axiosPost from "@/src/hooks/axiosPost";
+import CustomTabPanel from "@/src/components/common/CustomTabPanel";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -104,9 +106,10 @@ const Profile = () => {
     const email = event.target.email.value;
     const shop = event.target.shop.value;
     const userPhoto = event.target.userPhoto.files[0];
+
     const base64Image = await convertBase64(userPhoto);
 
-    const imageUpload = await UploadImage(base64Image, user?.uid);
+    const imageUpload = await uploadImage(base64Image, user?.uid);
 
     if (imageUpload?.success) {
       updateUserProfile({
@@ -120,6 +123,7 @@ const Profile = () => {
         .catch((error: any) => {
           // An error occurred
           toast.error(error?.message);
+          return;
         });
 
       updateUserEmail(email)
@@ -131,6 +135,7 @@ const Profile = () => {
           // An error occurred
           console.log(error);
           toast.error(error?.message);
+          return;
         });
 
       const url = `${process.env.NEXT_PUBLIC_API_Server}/users/create`;
@@ -147,7 +152,7 @@ const Profile = () => {
       const options = {
         headers: { "content-type": "application/json; charset=UTF-8" },
       };
-      const result = await AxiosPost(url, userInfo, options);
+      const result = await axiosPost(url, userInfo, options);
       if (result.success) {
         console.log(result);
         toast.success(result?.message);
@@ -217,7 +222,7 @@ const Profile = () => {
               <TabPanel value={value} index={1}>
                 Here will all entries
               </TabPanel>
-              <TabPanel value={value} index={2}>
+              <CustomTabPanel value={value} index={2}>
                 {!user?.displayName || !user?.email || !user?.photoURL ? (
                   <Dialog
                     open={true}
@@ -253,7 +258,7 @@ const Profile = () => {
                 ) : (
                   <EditAccount />
                 )}
-              </TabPanel>
+              </CustomTabPanel>
             </Box>
           </Box>
         </Container>

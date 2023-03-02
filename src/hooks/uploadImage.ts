@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const UploadImage = async (image: String, imageName?: String) => {
+const uploadImage = async (image: String, imageName?: String) => {
   try {
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_API_Server}/upload/image`,
@@ -13,4 +13,4 @@ const UploadImage = async (image: String, imageName?: String) => {
   }
 };
 
-export default UploadImage;
+export default uploadImage;

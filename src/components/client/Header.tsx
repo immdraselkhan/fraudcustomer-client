@@ -14,6 +14,7 @@ import {
   Button,
   Drawer,
   CircularProgress,
+  Avatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -155,18 +156,19 @@ const Header = () => {
                   Login
                 </Button>
               ) : (
-                <IconButton
-                  size="large"
-                  edge="end"
+                <Box
                   aria-label="account of current user"
-                  aria-haspopup="true"
                   color="inherit"
                   onClick={(event: HTMLEvent) =>
                     void setMenuState(event.currentTarget)
                   }
                 >
-                  <AccountCircle />
-                </IconButton>
+                  {user?.photoURL ? (
+                    <Avatar alt={user?.displayName} src={user?.photoURL} />
+                  ) : (
+                    <AccountCircle />
+                  )}
+                </Box>
               )}
             </Box>
           )}

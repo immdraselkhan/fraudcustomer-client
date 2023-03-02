@@ -58,11 +58,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return signInWithPopup(auth, provider);
   };
 
-  // Send verification email [skipped for this assignment, after result just import "sendEmailVerification" then enable the bellow code and send context value "verifyEmail"]
-  // const verifyEmail = () => {
-  //   // Return the firebase api function
-  //   return sendEmailVerification(auth.currentUser);
-  // };
+  // Send verification email
+  const verifyEmail = () => {
+    // Return the firebase api function
+    // @ts-ignore
+    return sendEmailVerification(auth.currentUser);
+  };
 
   // Update user details
   const updateUserProfile = (info: {}) => {
@@ -96,10 +97,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     <AuthContext.Provider
       value={{
         phoneAuth,
-        googleAuth,
-        authWithPopup,
         loading,
         user,
+        verifyEmail,
         updateUserProfile,
         updateUserEmail,
         userLogOut,

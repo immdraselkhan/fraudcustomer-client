@@ -4,7 +4,7 @@ import { useTheme } from "@mui/material/styles";
 import PhoneNumberInput from "../../common/PhoneNumber";
 
 const EditAccount = () => {
-  // User
+  // Get user information
   const { user } = useAuth();
   // Mui theme hook
   const theme = useTheme();

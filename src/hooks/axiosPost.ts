@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
-const AxiosPost = async (
+const axiosPost = async (
   url: string,
   body?: {} | undefined,
   options?: AxiosRequestConfig | undefined
@@ -13,4 +13,4 @@ const AxiosPost = async (
   }
 };
 
-export default AxiosPost;
+export default axiosPost;
