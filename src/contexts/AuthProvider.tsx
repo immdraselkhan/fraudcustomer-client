@@ -11,6 +11,8 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
   updateProfile,
+  updateEmail,
+  sendEmailVerification,
   signOut,
 } from "firebase/auth";
 import app from "../firebase/firebase.init";
@@ -56,6 +58,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return signInWithPopup(auth, provider);
   };
 
+  // Send verification email [skipped for this assignment, after result just import "sendEmailVerification" then enable the bellow code and send context value "verifyEmail"]
+  // const verifyEmail = () => {
+  //   // Return the firebase api function
+  //   return sendEmailVerification(auth.currentUser);
+  // };
+
+  // Update user details
+  const updateUserProfile = (info: {}) => {
+    // Return the firebase api function
+    // @ts-ignore
+    return updateProfile(auth.currentUser, info);
+  };
+
+  // Update user email
+  const updateUserEmail = (email: string) => {
+    // Return the firebase api function
+    // @ts-ignore
+    return updateEmail(auth.currentUser, email);
+  };
+
+  // Send a password reset email
+  const passwordResetEmail = (email: string) => {
+    // Return the firebase api function
+    return sendPasswordResetEmail(auth, email);
+  };
+
   // Sign out
   const userLogOut = async () => {
     // Empty the user state
@@ -72,6 +100,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         authWithPopup,
         loading,
         user,
+        updateUserProfile,
+        updateUserEmail,
         userLogOut,
       }}
     >

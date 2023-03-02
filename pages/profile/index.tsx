@@ -21,11 +21,27 @@ import {
 } from "@mui/material";
 import PageTitle from "@/src/components/common/PageTitle";
 import EditAccount from "@/src/components/client/profile/EditAccount";
+import convertBase64 from "@/src/utilis/convertBase64";
+import UploadImage from "@/src/hooks/useUploadImage";
+import LoadingOverlay from "@/src/components/common/LoadingOverlay";
+import { toast } from "react-hot-toast";
+import AxiosPost from "@/src/hooks/useAxiosPost";
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
+}
+
+interface UserInfo {
+  uid: string;
+  name: string;
+  email: string;
+  number: string;
+  shop: string;
+  photo: string;
+  role: string;
+  isVerified: boolean;
 }
 
 const TabPanel = (props: TabPanelProps) => {
@@ -60,7 +76,7 @@ const Profile = () => {
   const title = useTitle();
 
   // Get user information
-  const { user, userLogOut } = useAuth();
+  const { user, updateUserProfile, updateUserEmail, userLogOut } = useAuth();
 
   // Mii theme hook
   const theme = useTheme();
@@ -74,19 +90,79 @@ const Profile = () => {
     !user?.displayName || !user?.email || !user?.photoURL ? 2 : 0
   );
 
+  const [overlayLoading, setOverlayLoading] = React.useState(false);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    setValue(
+      !user?.displayName || !user?.email || !user?.photoURL ? 2 : newValue
+    );
   };
 
-  const handleSubmit = (event: HTMLEvent) => {
+  const handleSubmit = async (event: HTMLEvent) => {
     event.preventDefault();
-    const firstName = event.target.firstName.value;
-    const lastName = event.target.lastName.value;
+    const fullName = event.target.name.value;
     const email = event.target.email.value;
     const shop = event.target.shop.value;
     const userPhoto = event.target.userPhoto.files[0];
-    console.log(firstName, lastName, email, shop, userPhoto);
+    const base64Image = await convertBase64(userPhoto);
+
+    const imageUpload = await UploadImage(base64Image, user?.uid);
+
+    if (imageUpload?.success) {
+      updateUserProfile({
+        displayName: fullName,
+        photoURL: imageUpload?.url,
+      })
+        .then(() => {
+          // Profile updated!
+          toast.success("Profile updated");
+        })
+        .catch((error: any) => {
+          // An error occurred
+          toast.error(error?.message);
+        });
+
+      updateUserEmail(email)
+        .then(() => {
+          // Email updated!
+          toast.success("Email updated");
+        })
+        .catch((error: any) => {
+          // An error occurred
+          console.log(error);
+          toast.error(error?.message);
+        });
+
+      const url = `${process.env.NEXT_PUBLIC_API_Server}/users/create`;
+      const userInfo: UserInfo = {
+        uid: user?.uid,
+        name: fullName,
+        email,
+        number: user?.phoneNumber,
+        shop,
+        photo: imageUpload?.url,
+        role: "user",
+        isVerified: false,
+      };
+      const options = {
+        headers: { "content-type": "application/json; charset=UTF-8" },
+      };
+      const result = await AxiosPost(url, userInfo, options);
+      if (result.success) {
+        console.log(result);
+        toast.success(result?.message);
+        setOverlayLoading(false);
+      } else {
+        console.log(result);
+        toast.error(result?.message);
+        setOverlayLoading(false);
+      }
+    } else {
+      toast.error(imageUpload.message);
+      setOverlayLoading(false);
+    }
   };
+  console.log(user);
 
   return (
     <>
@@ -136,13 +212,13 @@ const Profile = () => {
             </Box>
             <Box>
               <TabPanel value={value} index={0}>
-                {`Hello, ${user?.uid}`}
+                {`Hello, ${user?.displayName}`}
               </TabPanel>
               <TabPanel value={value} index={1}>
                 Here will all entries
               </TabPanel>
               <TabPanel value={value} index={2}>
-                {(!user?.displayName || !user?.email || !user?.photoURL) && (
+                {!user?.displayName || !user?.email || !user?.photoURL ? (
                   <Dialog
                     open={true}
                     sx={{
@@ -150,11 +226,15 @@ const Profile = () => {
                       margin: "0 auto",
                     }}
                   >
+                    {overlayLoading && <LoadingOverlay />}
                     <DialogTitle sx={{ paddingBottom: 0 }}>
                       Update Account Info
                     </DialogTitle>
                     <FormControl
-                      onSubmit={(event) => handleSubmit(event)}
+                      onSubmit={(event) => {
+                        setOverlayLoading(true);
+                        handleSubmit(event);
+                      }}
                       component="form"
                     >
                       <DialogContent>
@@ -170,8 +250,9 @@ const Profile = () => {
                       </DialogActions>
                     </FormControl>
                   </Dialog>
+                ) : (
+                  <EditAccount />
                 )}
-                Account Details
               </TabPanel>
             </Box>
           </Box>

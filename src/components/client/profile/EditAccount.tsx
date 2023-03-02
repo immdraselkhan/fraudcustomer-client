@@ -1,35 +1,26 @@
+import { useAuth } from "@/src/contexts/AuthProvider";
 import { Box, TextField } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import PhoneNumberInput from "../../common/PhoneNumber";
 
 const EditAccount = () => {
+  // User
+  const { user } = useAuth();
   // Mui theme hook
   const theme = useTheme();
   return (
     <Box sx={{ display: "inline-grid", gap: "10px" }}>
-      <Box
-        sx={{ display: "flex", justifyContent: "space-between", gap: "25px" }}
-      >
-        <TextField
-          autoFocus
-          margin="dense"
-          name="firstName"
-          label="Fist Name"
-          type="text"
-          fullWidth
-          variant="standard"
-          required
-        />
-        <TextField
-          margin="dense"
-          name="lastName"
-          label="Last Name"
-          type="text"
-          fullWidth
-          variant="standard"
-          required
-        />
-      </Box>
+      <TextField
+        autoFocus
+        margin="dense"
+        name="name"
+        label="Full Name"
+        type="text"
+        fullWidth
+        variant="standard"
+        required
+        defaultValue={user?.displayName}
+      />
       <TextField
         margin="dense"
         name="email"
@@ -39,6 +30,7 @@ const EditAccount = () => {
         variant="standard"
         required
         sx={{ marginBottom: "25px" }}
+        defaultValue={user?.email}
       />
       <PhoneNumberInput />
       <TextField
@@ -49,6 +41,7 @@ const EditAccount = () => {
         fullWidth
         required
         variant="standard"
+        defaultValue="UniShop"
       />
       <TextField
         id="outlined-full-width"
