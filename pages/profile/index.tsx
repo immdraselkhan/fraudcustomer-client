@@ -78,12 +78,10 @@ const Profile = () => {
   const title = useTitle();
 
   // Get user information
-  const { user, updateUserProfile, updateUserEmail, userLogOut } = useAuth();
+  const { user, updateUserProfile, updateUserEmail, verifyEmail } = useAuth();
 
   // Mii theme hook
   const theme = useTheme();
-
-  console.log(theme);
 
   // Mui media query hook
   const matches = useMediaQuery(theme.breakpoints.up("sm"));
@@ -94,51 +92,48 @@ const Profile = () => {
 
   const [overlayLoading, setOverlayLoading] = React.useState(false);
 
+  const [dialogOpen, setDialogOpen] = React.useState<boolean>(true);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(
       !user?.displayName || !user?.email || !user?.photoURL ? 2 : newValue
     );
   };
 
+  // Store user to the database
+  const storeUser = async (userInfo: {}) => {
+    const url = `${process.env.NEXT_PUBLIC_API_Server}/users/create`;
+    const options = {
+      headers: { "content-type": "application/json; charset=UTF-8" },
+    };
+    const result = await axiosPost(url, userInfo, options);
+    if (result.success) {
+      toast.success(result?.message);
+      setDialogOpen(false);
+      setOverlayLoading(false);
+    } else {
+      toast.error(result?.message);
+      setOverlayLoading(false);
+    }
+  };
+
+  // Handle form submission
   const handleSubmit = async (event: HTMLEvent) => {
+    // Disable form default behavior
     event.preventDefault();
     const fullName = event.target.name.value;
     const email = event.target.email.value;
     const shop = event.target.shop.value;
     const userPhoto = event.target.userPhoto.files[0];
 
+    // Convert user image to base64
     const base64Image = await convertBase64(userPhoto);
 
+    // Upload image to server
     const imageUpload = await uploadImage(base64Image, user?.uid);
 
     if (imageUpload?.success) {
-      updateUserProfile({
-        displayName: fullName,
-        photoURL: imageUpload?.url,
-      })
-        .then(() => {
-          // Profile updated!
-          toast.success("Profile updated");
-        })
-        .catch((error: any) => {
-          // An error occurred
-          toast.error(error?.message);
-          return;
-        });
-
-      updateUserEmail(email)
-        .then(() => {
-          // Email updated!
-          toast.success("Email updated");
-        })
-        .catch((error: any) => {
-          // An error occurred
-          console.log(error);
-          toast.error(error?.message);
-          return;
-        });
-
-      const url = `${process.env.NEXT_PUBLIC_API_Server}/users/create`;
+      // User info object
       const userInfo: UserInfo = {
         uid: user?.uid,
         name: fullName,
@@ -149,25 +144,48 @@ const Profile = () => {
         role: "user",
         isVerified: false,
       };
-      const options = {
-        headers: { "content-type": "application/json; charset=UTF-8" },
-      };
-      const result = await axiosPost(url, userInfo, options);
-      if (result.success) {
-        console.log(result);
-        toast.success(result?.message);
-        setOverlayLoading(false);
-      } else {
-        console.log(result);
-        toast.error(result?.message);
-        setOverlayLoading(false);
-      }
+      // Update user email
+      updateUserEmail(email)
+        .then(() => {
+          // Email updated!
+          // toast.success("Email updated");
+          // Send verification email
+          verifyEmail().then(() => {
+            // Email verification sent!
+            toast.success("Verification email sent!");
+          });
+          // Update user name and photo
+          updateUserProfile({
+            displayName: fullName,
+            photoURL: imageUpload?.url,
+          })
+            .then(() => {
+              // Profile updated!
+              // toast.success("Profile updated");
+              // Call the function to store in database
+              storeUser(userInfo);
+            })
+            .catch((error: any) => {
+              // An error occurred
+              toast.error(error?.message);
+              // console.log(error);
+              return;
+            });
+        })
+        .catch((error: any) => {
+          // An error occurred
+          toast.error(error?.message);
+          // console.log(error);
+          return;
+        });
     } else {
+      // An error occurred
       toast.error(imageUpload.message);
-      setOverlayLoading(false);
+      // console.log(imageUpload.message);
     }
+    // Disable the overlay loader
+    setOverlayLoading(false);
   };
-  console.log(user);
 
   return (
     <>
@@ -225,7 +243,7 @@ const Profile = () => {
               <CustomTabPanel value={value} index={2}>
                 {!user?.displayName || !user?.email || !user?.photoURL ? (
                   <Dialog
-                    open={true}
+                    open={dialogOpen}
                     sx={{
                       maxWidth: "450px",
                       margin: "0 auto",
