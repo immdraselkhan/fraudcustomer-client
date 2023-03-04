@@ -128,48 +128,44 @@ const Login = () => {
       <Head>
         <title>{`Login | ${title}`}</title>
       </Head>
-      <main>
-        <Container
-          maxWidth={false}
-          sx={{ maxWidth: { xs: "386px", sm: "402px" } }}
+      <Container
+        maxWidth={false}
+        sx={{ maxWidth: { xs: "386px", sm: "402px" } }}
+      >
+        <Box
+          sx={[
+            {
+              display: "inline-grid",
+              gap: "50px",
+              padding: "25px",
+              boxShadow: (theme) => theme.shadows[1],
+              width: "100%",
+            },
+            theme.palette.mode === "dark" && {
+              border: "1px solid",
+              borderColor: theme.palette.excel.dark,
+              borderRadius: theme.shape.borderRadius + "px",
+            },
+          ]}
         >
-          <Box
-            sx={[
-              {
-                display: "inline-grid",
-                gap: "50px",
-                padding: "25px",
-                boxShadow: (theme) => theme.shadows[1],
-                marginTop: "100px",
-                marginBottom: "100px",
-                width: "100%",
-              },
-              theme.palette.mode === "dark" && {
-                border: "1px solid",
-                borderColor: theme.palette.excel.dark,
-                borderRadius: theme.shape.borderRadius + "px",
-              },
-            ]}
-          >
-            {activeStep === 0 && (
-              <SendOTP
-                phoneNumber={phoneNumber}
-                loader={loader}
-                handleSendOtp={handleSendOtp}
-              />
-            )}
+          {activeStep === 0 && (
+            <SendOTP
+              phoneNumber={phoneNumber}
+              loader={loader}
+              handleSendOtp={handleSendOtp}
+            />
+          )}
 
-            {activeStep === 1 && (
-              <VerifyOTP
-                phoneNumber={phoneNumber}
-                loader={loader}
-                handleOtpVerify={handleOtpVerify}
-                handleBack={handleBack}
-              />
-            )}
-          </Box>
-        </Container>
-      </main>
+          {activeStep === 1 && (
+            <VerifyOTP
+              phoneNumber={phoneNumber}
+              loader={loader}
+              handleOtpVerify={handleOtpVerify}
+              handleBack={handleBack}
+            />
+          )}
+        </Box>
+      </Container>
     </>
   );
 };

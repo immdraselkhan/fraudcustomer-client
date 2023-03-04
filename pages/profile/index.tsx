@@ -192,95 +192,93 @@ const Profile = () => {
       <Head>
         <title>{`Profile | ${title}`}</title>
       </Head>
-      <main>
-        <PageTitle title="My Account" />
-        <Container>
+      <PageTitle title="My Account" />
+      <Container>
+        <Box
+          sx={{
+            width: "100%",
+            display: { xs: "inherit", sm: "flex" },
+            padding: "50px 0",
+            minHeight: "calc(100vh - 380px)",
+          }}
+        >
           <Box
             sx={{
-              width: "100%",
-              display: { xs: "inherit", sm: "flex" },
-              padding: "50px 0",
-              minHeight: "calc(100vh - 380px)",
+              borderBottom: 1,
+              borderColor: "divider",
             }}
           >
-            <Box
-              sx={{
-                borderBottom: 1,
-                borderColor: "divider",
-              }}
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              variant="scrollable"
+              orientation={matches ? "vertical" : "horizontal"}
+              aria-label="basic tabs example"
             >
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                variant="scrollable"
-                orientation={matches ? "vertical" : "horizontal"}
-                aria-label="basic tabs example"
-              >
-                <Tab
-                  sx={{ alignItems: "start" }}
-                  label="Dashboard"
-                  {...a11yProps(0)}
-                />
-                <Tab
-                  sx={{ alignItems: "start" }}
-                  label="My Entries"
-                  {...a11yProps(1)}
-                />
-                <Tab
-                  sx={{ alignItems: "start" }}
-                  label="Account Details"
-                  {...a11yProps(2)}
-                />
-              </Tabs>
-            </Box>
-            <Box>
-              <TabPanel value={value} index={0}>
-                {`Hello, ${user?.displayName}`}
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                Here will all entries
-              </TabPanel>
-              <CustomTabPanel value={value} index={2}>
-                {!user?.displayName || !user?.email || !user?.photoURL ? (
-                  <Dialog
-                    open={dialogOpen}
-                    sx={{
-                      maxWidth: "450px",
-                      margin: "0 auto",
-                    }}
-                  >
-                    {overlayLoading && <LoadingOverlay />}
-                    <DialogTitle sx={{ paddingBottom: 0 }}>
-                      Update Account Info
-                    </DialogTitle>
-                    <FormControl
-                      onSubmit={(event) => {
-                        setOverlayLoading(true);
-                        handleSubmit(event);
-                      }}
-                      component="form"
-                    >
-                      <DialogContent>
-                        <DialogContentText sx={{ marginBottom: "20px" }}>
-                          To continue, please complete your profile.
-                        </DialogContentText>
-                        <EditAccount />
-                      </DialogContent>
-                      <DialogActions sx={{ padding: "0 20px 20px" }}>
-                        <Button variant="contained" type="submit">
-                          Submit
-                        </Button>
-                      </DialogActions>
-                    </FormControl>
-                  </Dialog>
-                ) : (
-                  <EditAccount />
-                )}
-              </CustomTabPanel>
-            </Box>
+              <Tab
+                sx={{ alignItems: "start" }}
+                label="Dashboard"
+                {...a11yProps(0)}
+              />
+              <Tab
+                sx={{ alignItems: "start" }}
+                label="My Entries"
+                {...a11yProps(1)}
+              />
+              <Tab
+                sx={{ alignItems: "start" }}
+                label="Account Details"
+                {...a11yProps(2)}
+              />
+            </Tabs>
           </Box>
-        </Container>
-      </main>
+          <Box>
+            <TabPanel value={value} index={0}>
+              {`Hello, ${user?.displayName}`}
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              Here will all entries
+            </TabPanel>
+            <CustomTabPanel value={value} index={2}>
+              {!user?.displayName || !user?.email || !user?.photoURL ? (
+                <Dialog
+                  open={dialogOpen}
+                  sx={{
+                    maxWidth: "450px",
+                    margin: "0 auto",
+                  }}
+                >
+                  {overlayLoading && <LoadingOverlay />}
+                  <DialogTitle sx={{ paddingBottom: 0 }}>
+                    Update Account Info
+                  </DialogTitle>
+                  <FormControl
+                    onSubmit={(event) => {
+                      setOverlayLoading(true);
+                      handleSubmit(event);
+                    }}
+                    component="form"
+                  >
+                    <DialogContent>
+                      <DialogContentText sx={{ marginBottom: "20px" }}>
+                        To continue, please complete your profile.
+                      </DialogContentText>
+                      <EditAccount />
+                    </DialogContent>
+                    <DialogActions sx={{ padding: "0 20px 20px" }}>
+                      <Button variant="contained" type="submit">
+                        Submit
+                      </Button>
+                    </DialogActions>
+                  </FormControl>
+                </Dialog>
+              ) : (
+                <EditAccount />
+              )}
+            </CustomTabPanel>
+          </Box>
+        </Box>
+      </Container>
     </>
   );
 };

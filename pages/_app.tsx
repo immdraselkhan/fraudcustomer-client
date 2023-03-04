@@ -39,7 +39,14 @@ export default function MyApp(props: MyAppProps) {
       <CssBaseline />
       <AuthProvider>
         <MuiThemeProvider>
-          <Paper sx={{ borderRadius: "0" }}>
+          <Paper
+            sx={{
+              borderRadius: "0",
+              minHeight: "100vh",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <Layout>
               <Toaster />
               <Component {...pageProps} />

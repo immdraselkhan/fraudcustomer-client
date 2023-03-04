@@ -146,15 +146,24 @@ const Header = () => {
           ) : (
             <Box sx={{ marginLeft: "auto" }}>
               {!user?.uid ? (
-                <Button
-                  to="/login"
-                  component={NextLinkComposed}
-                  variant={
-                    theme.palette.mode === "dark" ? "outlined" : "contained"
-                  }
-                >
-                  Login
-                </Button>
+                <Box sx={{ display: "flex", gap: "15px" }}>
+                  <Button
+                    to="/signup"
+                    component={NextLinkComposed}
+                    variant={
+                      theme.palette.mode === "dark" ? "outlined" : "contained"
+                    }
+                  >
+                    Sign up
+                  </Button>
+                  <Button
+                    to="/login"
+                    component={NextLinkComposed}
+                    variant="contained"
+                  >
+                    Login
+                  </Button>
+                </Box>
               ) : (
                 <Box
                   aria-label="account of current user"

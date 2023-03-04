@@ -36,7 +36,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         />
       </Head>
       <Header />
-      {children}
+      <main style={{ flexGrow: "1" }}>{children}</main>
       <Footer />
     </>
   );
