@@ -1,7 +1,7 @@
 import { Typography, Box, FormControl, Button } from "@mui/material";
 import PhoneNumberInput from "../../common/PhoneNumber";
 
-const SendOTP = ({ loader, handleSendOtp }: HTMLEvent) => {
+const SendOTPx = ({ loader, handleSendOtp }: HTMLEvent) => {
   return (
     <>
       <Typography variant="h6">Enter your phone number</Typography>
@@ -32,4 +32,4 @@ const SendOTP = ({ loader, handleSendOtp }: HTMLEvent) => {
   );
 };
 
-export default SendOTP;
+export default SendOTPx;

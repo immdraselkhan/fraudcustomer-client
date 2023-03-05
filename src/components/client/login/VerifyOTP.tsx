@@ -44,7 +44,7 @@ const VerifyOTP = ({
             placeholder="6-digit code"
             type="tel"
             name="code"
-            required
+            // required
           />
         </Box>
         <Box

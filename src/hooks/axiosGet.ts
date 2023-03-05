@@ -1,16 +1,15 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
-const axiosPost = async (
+const axiosGet = async (
   url: string,
-  body?: {} | undefined,
   options?: AxiosRequestConfig | undefined
 ) => {
   try {
-    const { data } = await axios.post(url, body, options);
+    const { data } = await axios.get(url, options);
     return data;
   } catch (error: AxiosError | unknown) {
     return error;
   }
 };
 
-export default axiosPost;
+export default axiosGet;

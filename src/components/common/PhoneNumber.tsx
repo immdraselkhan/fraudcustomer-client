@@ -3,14 +3,19 @@ import { Box, TextField, MenuItem, Input } from "@mui/material";
 import { useRouter } from "next/router";
 import countries from "../../data/countries.json";
 
-const PhoneNumberInput = () => {
+interface PhoneNumberInputProps {
+  number?: string;
+}
+
+const PhoneNumberInput = ({ number }: PhoneNumberInputProps) => {
   // Get user information
   const { user } = useAuth();
 
   // Next router hook
   const router = useRouter();
+
   return (
-    <Box sx={{ display: "flex", gap: "25px" }}>
+    <Box sx={{ display: "flex", gap: "25px", marginTop: "20px" }}>
       <TextField
         name="country"
         defaultValue="+88"
@@ -35,13 +40,16 @@ const PhoneNumberInput = () => {
           minLength: 11,
           maxLength: 11,
           pattern: "[0]{1}[1]{1}[3-9]{1}[0-9]{8}",
-          autoFocus: true,
         }}
         placeholder="01xxxxxxxxx"
         type="tel"
         name="number"
         required
-        defaultValue={user?.phoneNumber?.toString()?.slice(3) || ""}
+        defaultValue={
+          number?.toString()?.slice(3) ||
+          user?.phoneNumber?.toString()?.slice(3) ||
+          ""
+        }
         readOnly={router.pathname.startsWith("/profile")}
         disabled={router.pathname.startsWith("/profile")}
       />

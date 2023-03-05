@@ -12,8 +12,10 @@ import {
   sendPasswordResetEmail,
   updateProfile,
   updateEmail,
+  updatePassword,
   sendEmailVerification,
   signOut,
+  deleteUser,
 } from "firebase/auth";
 import app from "../firebase/firebase.init";
 
@@ -79,6 +81,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return updateEmail(auth.currentUser, email);
   };
 
+  // Update user password
+  const updateUserPassword = (newPassword: String) => {
+    // Return the firebase api function
+    // @ts-ignore
+    return updatePassword(auth.currentUser, newPassword);
+  };
+
   // Send a password reset email
   const passwordResetEmail = (email: string) => {
     // Return the firebase api function
@@ -93,6 +102,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return await signOut(auth);
   };
 
+  // Delete user account
+  const deleteUserAccount = () => {
+    // Return the firebase api function
+    // @ts-ignore
+    return deleteUser(auth.currentUser);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -102,7 +118,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         verifyEmail,
         updateUserProfile,
         updateUserEmail,
+        updateUserPassword,
         userLogOut,
+        deleteUserAccount,
       }}
     >
       {children}

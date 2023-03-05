@@ -6,7 +6,7 @@ import { getAuth, RecaptchaVerifier } from "firebase/auth";
 import { useAuth } from "@/src/contexts/AuthProvider";
 import { useRouter } from "next/router";
 import useTitle from "@/src/hooks/useTitle";
-import SendOTP from "@/src/components/client/login/SendOTP";
+import SendOTP from "@/src/components/client/login/SendOTPx";
 import VerifyOTP from "@/src/components/client/login/VerifyOTP";
 import { toast } from "react-hot-toast";
 import Loader from "@/src/components/common/Loader";
