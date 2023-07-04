@@ -14,7 +14,6 @@ const UserBasicInfo = ({ userInfo }: UserBasicInfoProps) => {
   return (
     <>
       <TextField
-        autoFocus
         margin="dense"
         name="name"
         label="Full Name"

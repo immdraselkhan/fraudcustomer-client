@@ -5,10 +5,4 @@ declare global {
     recaptchaVerifier: {};
     confirmationResult: {};
   }
-
-  type HTMLEvent = React.MouseEvent<
-    MouseEvent,
-    EventTarget & HTMLElement,
-    EventTarget
-  >;
 }

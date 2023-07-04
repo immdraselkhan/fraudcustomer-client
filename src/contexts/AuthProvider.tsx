@@ -5,7 +5,6 @@ import {
   TwitterAuthProvider,
   GithubAuthProvider,
   signInWithPhoneNumber,
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
   onAuthStateChanged,
@@ -47,6 +46,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const phoneAuth = (phoneNumber: any, appVerifier: any) => {
     // Return the firebase api function
     return signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+  };
+
+  // Sign in a user with email address and password
+  const logInWithEmailPassword = (email: string, password: string) => {
+    // Return the firebase api function
+    return signInWithEmailAndPassword(auth, email, password);
   };
 
   // Social media auth providers
@@ -113,12 +118,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     <AuthContext.Provider
       value={{
         phoneAuth,
+        logInWithEmailPassword,
         loading,
         user,
         verifyEmail,
         updateUserProfile,
         updateUserEmail,
         updateUserPassword,
+        passwordResetEmail,
         userLogOut,
         deleteUserAccount,
       }}

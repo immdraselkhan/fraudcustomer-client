@@ -1,15 +1,26 @@
 import Head from "next/head";
-import { Box, Container } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useEffect, useState } from "react";
-import { getAuth, RecaptchaVerifier } from "firebase/auth";
+import { useState } from "react";
+import { getAuth } from "firebase/auth";
 import { useAuth } from "@/src/contexts/AuthProvider";
 import { useRouter } from "next/router";
 import useTitle from "@/src/hooks/useTitle";
-import SendOTP from "@/src/components/client/login/SendOTPx";
-import VerifyOTP from "@/src/components/client/login/VerifyOTP";
-import { toast } from "react-hot-toast";
+import { NextLinkComposed } from "@/src/components/common/MuiLink";
 import Loader from "@/src/components/common/Loader";
+import { toast } from "react-hot-toast";
+import PasswordReset from "@/src/components/client/login/PasswordReset";
 
 const Login = () => {
   // Global site title
@@ -19,97 +30,89 @@ const Login = () => {
   const auth = getAuth();
 
   // Get user information
-  const { phoneAuth, user, loading } = useAuth();
+  const { logInWithEmailPassword, user, loading, passwordResetEmail } =
+    useAuth();
 
   // Next router hook
   const router = useRouter();
 
-  // Step phone authentication state
-  const [activeStep, setActiveStep] = useState<number>(0);
-
-  // User phone number state
-  const [phoneNumber, setPhoneNumber] = useState<number>();
-
   // Button loader state
   const [loader, setLoader] = useState<boolean>(false);
+
+  // User email state
+  const [email, setEmail] = useState<string | undefined>();
+
+  // Password reset dialog state
+  const [dialog, setDialog] = useState<boolean>(false);
 
   // Mui theme hook
   const theme = useTheme();
 
-  useEffect(() => {
-    if (!loading && !user?.uid) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        "recaptcha-container",
-        {},
-        auth
-      );
+  // Handle login
+  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    // Disable form default behavior
+    event.preventDefault();
+
+    // Enable button loader
+    setLoader(true);
+
+    // Form data
+    const data = new FormData(event.currentTarget);
+    const email = data.get("email");
+    const password = data.get("password");
+
+    // Set email to the state
+    if (typeof email === "string") {
+      setEmail(email);
     }
-  }, [activeStep, loading, user, auth]);
 
-  // Handle otp sending
-  const handleSendOtp = (event: HTMLEvent) => {
-    // Disable form default behavior
-    event.preventDefault();
-
-    // Enable button loader
-    setLoader(true);
-
-    // User phone number
-    const number = event.target.country.value + event.target.number.value;
-
-    // Set phone number to the state
-    setPhoneNumber(event.target.country.value + event.target.number.value);
-
-    // Get captcha object
-    const appVerifier = window.recaptchaVerifier;
-
-    phoneAuth(number, appVerifier)
-      .then((confirmationResult: {}) => {
-        // SMS sent. Prompt user to type the code from the message, then sign the
-        // user in with confirmationResult.confirm(code)
-        window.confirmationResult = confirmationResult;
-        // Otp sent successfully
-        toast.success("Otp sent successfully!");
-        setLoader(false);
-        setActiveStep(1);
-      })
-      .catch((error: any) => {
-        // Error; SMS not sent
-        toast.error(error?.message);
-        setLoader(false);
-        alert(error);
-      });
-  };
-
-  // Handle otp verification
-  const handleOtpVerify = (event: HTMLEvent) => {
-    // Disable form default behavior
-    event.preventDefault();
-
-    // Enable button loader
-    setLoader(true);
-
-    //@ts-ignore
-    confirmationResult
-      .confirm(event.target.code.value)
-      .then((result: { user: {} }) => {
-        // User signed in successfully
-        const user = result.user;
-        toast.success("User signed in successfully!");
+    logInWithEmailPassword(email, password)
+      .then((userCredential: {}) => {
+        // Signed in
+        toast.success("Successfully logged in!");
         setLoader(false);
         // @ts-ignore
         router.replace(router?.query?.redirect || "/");
       })
-      .catch((error: any) => {
-        // User couldn't sign in (bad verification code?)
-        toast.error(error?.message);
+      .catch((error: Error) => {
+        toast.error(
+          error.message === "Firebase: Error (auth/user-not-found)."
+            ? "User not found. Please sign up!"
+            : error.message === "Firebase: Error (auth/wrong-password)."
+            ? "Wrong password. You may reset it!"
+            : error.message
+        );
         setLoader(false);
+        return;
       });
   };
 
-  // Hadle back button action
-  const handleBack = () => {
-    setActiveStep((currentStep) => currentStep - 1);
+  // Handle password reset
+  const handlePasswordReset = (event: React.FormEvent<HTMLFormElement>) => {
+    // Disable form default behavior
+    event.preventDefault();
+
+    // Enable button loader
+    setLoader(true);
+
+    // Form data
+    const data = new FormData(event.currentTarget);
+
+    const email = data.get("email");
+
+    passwordResetEmail(email)
+      .then(() => {
+        // Password reset email sent!
+        toast.success("Password reset email sent!");
+        setDialog(false);
+        setLoader(false);
+      })
+      .catch((error: Error) => {
+        // An error occurred
+        toast.error(error?.message);
+        setLoader(false);
+        return;
+      });
   };
 
   // Loader until user information
@@ -129,17 +132,17 @@ const Login = () => {
         <title>{`Login | ${title}`}</title>
       </Head>
       <Container
-        maxWidth={false}
-        sx={{ maxWidth: { xs: "386px", sm: "402px" } }}
+        maxWidth="xs"
+        sx={{ paddingTop: "50px", paddingBottom: "50px" }}
       >
         <Box
           sx={[
             {
-              display: "inline-grid",
-              gap: "50px",
-              padding: "25px",
+              padding: "50px 25px",
               boxShadow: (theme) => theme.shadows[1],
-              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              gap: "25px",
             },
             theme.palette.mode === "dark" && {
               border: "1px solid",
@@ -148,23 +151,73 @@ const Login = () => {
             },
           ]}
         >
-          {activeStep === 0 && (
-            <SendOTP
-              phoneNumber={phoneNumber}
-              loader={loader}
-              handleSendOtp={handleSendOtp}
+          <Typography variant="h6">Welcome back!</Typography>
+          <FormControl
+            sx={{
+              gap: "15px",
+            }}
+            onSubmit={handleLogin}
+            component="form"
+          >
+            <TextField
+              name="email"
+              label="Email Address"
+              autoComplete="email"
+              type="email"
+              margin="normal"
+              required
+              disabled={loader}
             />
-          )}
-
-          {activeStep === 1 && (
-            <VerifyOTP
-              phoneNumber={phoneNumber}
-              loader={loader}
-              handleOtpVerify={handleOtpVerify}
-              handleBack={handleBack}
+            <TextField
+              name="password"
+              label="Password"
+              autoComplete="current-password"
+              type="password"
+              margin="normal"
+              required
+              disabled={loader}
+              inputProps={{
+                minLength: 6,
+              }}
             />
-          )}
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+              disabled={loader}
+            />
+            <Button type="submit" variant="contained" disabled={loader}>
+              {loader ? "Logging in..." : "Login"}
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link
+                  variant="body2"
+                  sx={{ cursor: "pointer", textDecoration: "none" }}
+                  onClick={() => setDialog(true)}
+                >
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link
+                  to="/signup"
+                  component={NextLinkComposed}
+                  variant="body2"
+                  sx={{ textDecoration: "none" }}
+                >
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid>
+          </FormControl>
         </Box>
+        <PasswordReset
+          loader={loader}
+          email={email}
+          dialog={dialog}
+          setDialog={setDialog}
+          handlePasswordReset={handlePasswordReset}
+        />
       </Container>
     </>
   );

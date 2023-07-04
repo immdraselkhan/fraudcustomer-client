@@ -118,16 +118,19 @@ const Profile = () => {
   };
 
   // Handle form submission
-  const handleSubmit = async (event: HTMLEvent) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     // Disable form default behavior
     event.preventDefault();
-    const fullName = event.target.name.value;
-    const email = event.target.email.value;
-    const shop = event.target.shop.value;
-    const userPhoto = event.target.userPhoto.files[0];
+    // Form data
+    const data = new FormData(event.currentTarget);
+
+    const name = data.get("name") as string;
+    const email = data.get("email") as string;
+    const shop = data.get("shop") as string;
+    const photo = data.get("photo") as File;
 
     // Convert user image to base64
-    const base64Image = await convertBase64(userPhoto);
+    const base64Image = await convertBase64(photo);
 
     // Upload image to server
     const imageUpload = await uploadImage(base64Image, user?.uid);
@@ -136,7 +139,7 @@ const Profile = () => {
       // User info object
       const userInfo: UserInfo = {
         uid: user?.uid,
-        name: fullName,
+        name,
         email,
         number: user?.phoneNumber,
         shop,
@@ -156,7 +159,7 @@ const Profile = () => {
           });
           // Update user name and photo
           updateUserProfile({
-            displayName: fullName,
+            displayName: name,
             photoURL: imageUpload?.url,
           })
             .then(() => {
@@ -165,14 +168,14 @@ const Profile = () => {
               // Call the function to store in database
               storeUser(userInfo);
             })
-            .catch((error: any) => {
+            .catch((error: Error) => {
               // An error occurred
               toast.error(error?.message);
               // console.log(error);
               return;
             });
         })
-        .catch((error: any) => {
+        .catch((error: Error) => {
           // An error occurred
           toast.error(error?.message);
           // console.log(error);
@@ -252,13 +255,7 @@ const Profile = () => {
                   <DialogTitle sx={{ paddingBottom: 0 }}>
                     Update Account Info
                   </DialogTitle>
-                  <FormControl
-                    onSubmit={(event) => {
-                      setOverlayLoading(true);
-                      handleSubmit(event);
-                    }}
-                    component="form"
-                  >
+                  <FormControl onSubmit={handleSubmit} component="form">
                     <DialogContent>
                       <DialogContentText sx={{ marginBottom: "20px" }}>
                         To continue, please complete your profile.

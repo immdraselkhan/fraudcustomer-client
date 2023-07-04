@@ -6,12 +6,12 @@ import { getAuth, RecaptchaVerifier } from "firebase/auth";
 import { useAuth } from "@/src/contexts/AuthProvider";
 import { useRouter } from "next/router";
 import useTitle from "@/src/hooks/useTitle";
-import VerifyOTP from "@/src/components/client/login/VerifyOTP";
+import VerifyOtp from "@/src/components/client/signup/VerifyOtp";
+import SendOtp from "@/src/components/client/signup/SendOtp";
 import { toast } from "react-hot-toast";
 import Loader from "@/src/components/common/Loader";
 import axiosGet from "@/src/hooks/axiosGet";
 import axiosPost from "@/src/hooks/axiosPost";
-import SendOtp from "../../src/components/client/signup/SendOtp";
 
 export interface IUserInfo {
   name: string;
@@ -52,18 +52,21 @@ const SignUp = () => {
   // Button loader state
   const [loader, setLoader] = useState<boolean>(false);
 
+  // Recaptcha state
+  const [recaptcha, setRecaptcha] = useState<boolean>(false);
+
   // Mui theme hook
   const theme = useTheme();
 
   useEffect(() => {
     if (!loading && !user?.uid) {
       window.recaptchaVerifier = new RecaptchaVerifier(
-        "recaptcha-container",
-        {},
+        "sign-up-button",
+        { size: "invisible" },
         auth
       );
     }
-  }, [activeStep, loading, user, auth]);
+  }, [recaptcha, loading, user, auth]);
 
   // Handle otp sending
   const handleSendOtp = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -73,17 +76,13 @@ const SignUp = () => {
     // Enable button loader
     setLoader(true);
 
-    // Form elements
-    const elements = event.currentTarget.elements;
-
-    // User input info
-    const number =
-      (elements.namedItem("country") as HTMLInputElement).value +
-      (elements.namedItem("number") as HTMLInputElement).value;
-    const name = (elements.namedItem("name") as HTMLInputElement).value;
-    const email = (elements.namedItem("email") as HTMLInputElement).value;
-    const password = (elements.namedItem("password") as HTMLInputElement).value;
-    const shop = (elements.namedItem("shop") as HTMLInputElement).value;
+    // Form data
+    const data = new FormData(event.currentTarget);
+    const number = `${data.get("country")}${data.get("number")}` as string;
+    const name = data.get("name") as string;
+    const email = data.get("email") as string;
+    const password = data.get("password") as string;
+    const shop = data.get("shop") as string;
 
     // Set user info to the state
     setUserInfo({ name, email, password, number, shop });
@@ -126,7 +125,7 @@ const SignUp = () => {
           return;
         });
     } else {
-      toast.error("Something went wrong!");
+      toast.error("Something went wrong! Try again.");
       setLoader(false);
       return;
     }
@@ -171,17 +170,18 @@ const SignUp = () => {
     // Disable form default behavior
     event.preventDefault();
 
+    // Form data
+    const data = new FormData(event.currentTarget);
+
     // Get the verification code from the form input
-    const verificationCode = (
-      event.currentTarget.elements.namedItem("code") as HTMLInputElement
-    ).value;
+    const code = data.get("code");
 
     // Enable button loader
     setLoader(true);
 
     // @ts-ignore
     confirmationResult
-      .confirm(verificationCode)
+      .confirm(code)
       .then((result: { user: {} }) => {
         // Create the user object
         const updatedUserInfo = {
@@ -250,6 +250,11 @@ const SignUp = () => {
     setActiveStep((currentStep) => currentStep - 1);
   };
 
+  // Re-render to get recaptcha
+  const handleRecaptcha = () => {
+    setRecaptcha(!recaptcha);
+  };
+
   // Loader until user information
   if (loading) {
     return <Loader />;
@@ -267,9 +272,8 @@ const SignUp = () => {
         <title>{`Sign up | ${title}`}</title>
       </Head>
       <Container
-        maxWidth={false}
+        maxWidth="xs"
         sx={{
-          maxWidth: { xs: "386px", sm: "402px" },
           paddingTop: "50px",
           paddingBottom: "50px",
         }}
@@ -300,11 +304,12 @@ const SignUp = () => {
           )}
 
           {activeStep === 1 && (
-            <VerifyOTP
+            <VerifyOtp
               number={userInfo?.number}
               loader={loader}
               handleOtpVerify={handleOtpVerify}
               handleBack={handleBack}
+              handleRecaptcha={handleRecaptcha}
             />
           )}
         </Box>

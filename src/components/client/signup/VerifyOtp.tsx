@@ -1,12 +1,21 @@
 import { useEffect, useState } from "react";
 import { Box, Button, FormControl, Input, Typography } from "@mui/material";
 
-const VerifyOTP = ({
-  phoneNumber,
+interface IVerifyOtpProps {
+  number: string | undefined;
+  loader: boolean;
+  handleOtpVerify: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleBack: () => void;
+  handleRecaptcha: () => void;
+}
+
+const VerifyOtp = ({
+  number,
   loader,
   handleOtpVerify,
   handleBack,
-}: HTMLEvent) => {
+  handleRecaptcha,
+}: IVerifyOtpProps) => {
   // Otp resend timer
   const [timer, setTimer] = useState<number>(15);
 
@@ -22,14 +31,14 @@ const VerifyOTP = ({
   return (
     <>
       <Typography variant="h6">Verify your phone number</Typography>
-      <Typography variant="subtitle1">{`Enter the 6-digit code we sent to ${phoneNumber}`}</Typography>
+      <Typography variant="subtitle1">{`Enter the 6-digit code we sent to ${number}`}</Typography>
       <FormControl
         sx={{
           gap: "25px",
           margin: "0 auto",
           width: "100%",
         }}
-        onSubmit={(event) => handleOtpVerify(event)}
+        onSubmit={handleOtpVerify}
         component="form"
       >
         <Box sx={{ display: "flex", gap: "25px" }}>
@@ -44,7 +53,7 @@ const VerifyOTP = ({
             placeholder="6-digit code"
             type="tel"
             name="code"
-            // required
+            required
           />
         </Box>
         <Box
@@ -57,7 +66,10 @@ const VerifyOTP = ({
           <Button
             disabled={loader}
             sx={{ maxWidth: "fit-content" }}
-            onClick={handleBack}
+            onClick={() => {
+              handleBack();
+              handleRecaptcha();
+            }}
           >
             Back
           </Button>
@@ -83,6 +95,7 @@ const VerifyOTP = ({
           onClick={() => {
             setTimer(15);
             handleBack();
+            handleRecaptcha();
           }}
         >
           Resend
@@ -92,4 +105,4 @@ const VerifyOTP = ({
   );
 };
 
-export default VerifyOTP;
+export default VerifyOtp;

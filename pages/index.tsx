@@ -40,12 +40,6 @@ export default function Home() {
                 maxHeight: "36px",
                 maxWidth: "250px",
               }}
-              onSubmit={(event: HTMLEvent) => {
-                event.preventDefault();
-                alert(
-                  `Do you want to search for ${event.target.number.value}?`
-                );
-              }}
               component="form"
             >
               <OutlinedInput

@@ -46,7 +46,7 @@ const EditAccount = () => {
       <TextField
         id="outlined-full-width"
         label="Upload Profile Picture"
-        name="userPhoto"
+        name="photo"
         type="file"
         margin="normal"
         InputLabelProps={{

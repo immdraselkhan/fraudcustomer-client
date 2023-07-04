@@ -168,7 +168,7 @@ const Header = () => {
                 <Box
                   aria-label="account of current user"
                   color="inherit"
-                  onClick={(event: HTMLEvent) =>
+                  onClick={(event: any) =>
                     void setMenuState(event.currentTarget)
                   }
                 >
